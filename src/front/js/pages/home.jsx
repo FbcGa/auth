@@ -8,18 +8,22 @@ export function Home() {
     email: "",
     password: "",
   });
+  const { actions } = useContext(Context);
 
   const handleForm = (e) => {
     e.preventDefault();
     setForm({ ...form, [e.target.name]: e.target.value });
-    console.log(form);
   };
 
-  const handleSubmit = () => {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const resp = await actions.login(form.email, form.password);
+    console.log(resp);
+  };
   return (
     <section className="w-50 h-70 border border-white border-4 rounded m-auto p-5 text-white mt-5">
       <h1 className="text-center fs-1">Login</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => handleSubmit(e)}>
         <div className="mb-3">
           <label htmlFor="exampleInputEmail1" className="form-label">
             Email address
