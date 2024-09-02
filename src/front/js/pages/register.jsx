@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
-import { Link, useNavigate } from "react-router-dom";
 import "../../styles/home.css";
+import { useNavigate } from "react-router-dom";
 
-export function Home() {
+export function Register() {
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -17,14 +17,14 @@ export function Home() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const isLogged = await actions.login(form.email, form.password);
+    const isLogged = await actions.register(form.email, form.password);
     if (isLogged) {
       navigate("/profile");
     }
   };
   return (
     <section className="w-50 h-70 border border-white border-4 rounded m-auto p-5 text-white mt-5">
-      <h1 className="text-center fs-1">Login</h1>
+      <h1 className="text-center fs-1">Register</h1>
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="mb-3">
           <label htmlFor="exampleInputEmail1" className="form-label">
@@ -60,9 +60,6 @@ export function Home() {
           <button type="submit" className="btn btn-primary">
             Submit
           </button>
-          <Link to="/register" className="mt-2">
-            If you don't have an account click here
-          </Link>
         </section>
       </form>
     </section>

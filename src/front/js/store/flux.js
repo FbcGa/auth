@@ -1,3 +1,5 @@
+import { any } from "prop-types";
+
 const getState = ({ getStore, getActions, setStore }) => {
   return {
     store: {
@@ -14,6 +16,7 @@ const getState = ({ getStore, getActions, setStore }) => {
           initial: "white",
         },
       ],
+      postUser: [],
     },
     actions: {
       // Use getActions to call a function within a fuction
@@ -55,7 +58,8 @@ const getState = ({ getStore, getActions, setStore }) => {
             body: JSON.stringify({ email, password }),
           });
           const data = await resp.json();
-          return data;
+          localStorage.setItem("token", data.token);
+          return true;
         } catch (error) {
           console.log(error);
         }
@@ -68,6 +72,65 @@ const getState = ({ getStore, getActions, setStore }) => {
             body: JSON.stringify({ email, password }),
           });
           const data = await resp.json();
+          localStorage.setItem("token", data.token);
+          return true;
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      profile: async () => {
+        try {
+          const token = localStorage.getItem("token");
+          const resp = await fetch(process.env.BACKEND_URL + "/api/me", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+          const data = await resp.json();
+          return data;
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      createPost: async (comment) => {
+        const token = localStorage.getItem("token");
+        try {
+          const resp = await fetch(process.env.BACKEND_URL + "/api/post", {
+            method: "POST",
+            headers: {
+              "Content-type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ comment }),
+          });
+          if (!resp.ok) {
+            return false;
+          }
+          const data = await resp.json();
+
+          return data;
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      getPost: async () => {
+        const token = localStorage.getItem("token");
+        try {
+          const resp = await fetch(process.env.BACKEND_URL + "/api/get", {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          if (!resp.ok) {
+            return false;
+          }
+          const data = await resp.json();
+          setStore({ postUser: data.post });
+          console.log(data);
           return data;
         } catch (error) {
           console.log(error);
