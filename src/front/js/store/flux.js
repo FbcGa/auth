@@ -130,7 +130,30 @@ const getState = ({ getStore, getActions, setStore }) => {
           }
           const data = await resp.json();
           setStore({ postUser: data.post });
-          console.log(data);
+          return data;
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      delPost: async (post_id) => {
+        const token = localStorage.getItem("token");
+        try {
+          const resp = await fetch(
+            process.env.BACKEND_URL + "/api/post/delete",
+            {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ post_id }),
+            }
+          );
+          if (!resp.ok) {
+            return false;
+          }
+          const data = await resp.json();
+          getActions().getPost();
           return data;
         } catch (error) {
           console.log(error);

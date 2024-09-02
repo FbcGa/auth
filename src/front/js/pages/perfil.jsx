@@ -10,7 +10,6 @@ function Perfil() {
 
   const get_profile = async () => {
     const resp = await actions.profile();
-    console.log(resp);
     setUser(resp);
   };
 
@@ -19,12 +18,16 @@ function Perfil() {
       e.preventDefault();
       const res = await actions.createPost(mssg);
       setMssg("");
+      actions.getPost();
     }
+  };
+
+  const deletePost = async (id) => {
+    await actions.delPost(id);
   };
 
   useEffect(() => {
     const jwt = localStorage.getItem("token");
-    console.log(jwt);
     if (!jwt) {
       navigate("/");
       return;
@@ -66,6 +69,12 @@ function Perfil() {
               style={{ width: "50%" }}
             >
               {post.comment}
+              <button
+                className="btn btn-danger position-absolute top-0 end-0"
+                onClick={() => deletePost(post.id)}
+              >
+                <i className="fa-solid fa-trash "></i>
+              </button>
             </li>
           );
         })}

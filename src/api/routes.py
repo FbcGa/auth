@@ -94,7 +94,21 @@ def get_post():
         return jsonify({"post": serialize_post}),200
     except Exception as error:
         return jsonify({"error": f"{error}"}),500
-    
+
+@api.route('/post/delete', methods=['DELETE'])
+@jwt_required()
+def delete_post():
+    user_data = get_jwt_identity()
+    body = request.json
+    post_id = body.get("post_id", None)
+    post_delete = Post.query.filter_by(id = post_id, user_id=user_data['id'] ).first()
+    try:
+        db.session.delete(post_delete)
+        db.session.commit()
+        return jsonify({"mssg" : "delete post"})
+    except Exception as error:
+        return jsonify({"error" : f"{error}"}),500
+
 @api.route("/me", methods=['GET'])
 @jwt_required()
 def get_user_data():
